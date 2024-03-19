@@ -1,0 +1,37 @@
+
+import cx_Oracle
+import pandas as pd
+import seaborn as sns
+import sklearn
+import time
+import numpy as np
+import datetime
+import matplotlib.pyplot as plt
+import sas7bdat
+
+   
+def getAvg():
+    conf="IMS_DATA_SHARE/IMS_DATA_SHARE@shauorl001p.internal.imsglobal.com:1521/IMSORA.internal.imsglobal.com"
+    
+    sql="""
+        SELECT DISTINCT PFC, AVG(pvalue_lst) as AvgValue, MEDIAN(pvalue_lst) as MedValue
+        FROM 
+        (
+            SELECT DISTINCT sale_date, pfc, sum(punits) as punits_lst, sum(pvalue) as pvalue_lst
+            FROM IMS_APPLI.MR_PRECOM_SYNC
+            WHERE sale_date>=TO_DATE(202301, 'yyyymm')
+            GROUP BY sale_date, pfc
+        )
+        GROUP BY PFC
+    """
+    conn = cx_Oracle.connect(conf) # 连接数据库
+    cur = conn.cursor()
+    cur.execute(sql)
+    title = [i[0] for i in cur.description]
+    res = cur.fetchall()
+    cur.close()
+    conn.close()
+    Avg = pd.DataFrame(res, columns=title)
+    print(Avg)
+    
+    return Avg

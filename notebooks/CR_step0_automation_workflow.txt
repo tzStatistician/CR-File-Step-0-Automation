@@ -1,0 +1,25 @@
+CR step 0 automation workflow
+1. Get prompt of year(yyyy) and month(mm) form user
+2. select count(1) 
+from IMS_APPLI.SYNC_FACT_ALL_INFO    
+where sale_date = to_date(&current period., 'yyyymm')
+order by to_char(SALE_DATE,'yyyymm');
+3. Create folder 'F:\Shared4SASUsers\IA_Hospital\SVNpro\Customized Report\MSD.Regional\RawData\yyyymm'
+4. Copy all files except ‘product_molecule.csv’ from A path to B path:
+    A: \\bejsfps02\Feng Mingzhu\hospital\MSD project\mmMyy
+    B: F:\Shared4SASUsers\IA_Hospital\SVNpro\Customized Report\MSD.Regional\RawData\yyyymm
+5. Rename ‘product_molecule_updated.csv’ to ‘product_molecule.csv’ in the B path
+6. Open ‘pack.csv’ in the B path with Notepad, and replace “” to “ ”.
+
+In python, I have two user input variable year (yyyy) and month (mm). Define functions and a main function to step Network Drive Connection:
+1. Define a function to check whether PD drive and DC drive is connected, 
+    1.1 if yes print 'PD, DC network already exist' and return to main
+    1.2 if no give user a chance to decide whether to connect PD and DC network drive by asking 'Do you want to mannually connect PD, DC network? (Y/N)'
+        1.2.1 if Y, print 'Exiting program...' and exist the program
+        1.2.2 if N, continue (return to main)
+    where DC drive is 'F:\Shared4SASUsers\IA_Hospital\SVNpro\Customized Report\MSD.Regional\RawData' and PD drive is '\\bejsfps02\Feng Mingzhu\hospital\MSD project'
+2. Define a funtion to get all available letter for network drive connection. Try to use os.
+    2.1 print the first 2 letters of all available letters and use them to connect PD DC network drive respectively
+3. Define a function to connect network drive
+    3.1 print 'PD network drive is connected and the specific path' if PD drive is connected
+    3.2 print 'DC network drive is connected and the specific path' if DC drive is connected
